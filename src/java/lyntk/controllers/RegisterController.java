@@ -25,6 +25,7 @@ import lyntk.utils.EncryptionUtil;
 public class RegisterController extends HttpServlet {
     
     private static final String ERROR_PAGE = "register.jsp";
+    private static final String SUCCESS_PAGE = "login.jsp";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,14 +42,16 @@ public class RegisterController extends HttpServlet {
         String url = ERROR_PAGE;
         try {
             String email = request.getParameter("email");
-            String password = EncryptionUtil.encrypt(request.getParameter("password"));
+            String password = request.getParameter("password");
             String username = request.getParameter("username");
-            AccountRole role = AccountRole.ADMIN;
+            AccountRole role = AccountRole.USER;
+            boolean activeStatus = true;
             AccountDao accountDao = new AccountDaoImpl();
             Account account = accountDao.findAccountByEmail(email);
             if(account == null){
-                account = new Account(email, EncryptionUtil.encrypt(password), username, role);
-                
+                account = new Account(email, EncryptionUtil.encrypt(password), username, role, activeStatus);
+                accountDao.save(account);
+                url = SUCCESS_PAGE;
             } else {
                 request.setAttribute("WARNING", "Email has been registered");
             }

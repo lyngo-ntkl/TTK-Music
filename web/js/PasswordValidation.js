@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-function validatePasswordFormat(id) {
-    var password = document.getElementById(id);
+function validatePasswordFormat(password) {
+    var passwordFormat = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+    if(password.value.match(passwordFormat)){
+        
+    }
 }
-

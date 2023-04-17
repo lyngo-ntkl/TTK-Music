@@ -14,6 +14,7 @@ import lyntk.models.Account;
  * @author Dell
  */
 public interface AccountDao {
-    Account findAccountByEmail(String email) throws SQLException;
+    Account findAccountByEmail(String email) throws SQLException, ClassNotFoundException;
     Account findAccountByEmailAndPassword(String email, String password) throws SQLException, ClassNotFoundException;
+    boolean save(Account account) throws SQLException, ClassNotFoundException;
 }

@@ -12,13 +12,15 @@
         <title>TTK Music - Login</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <h1>Login</h1>
         <form action="MainController" method="POST">
             <label>Email</label>
             <input name="email" type="email"/>
+            <br>
             <label>Password</label>
             <input name="password" type="password"/>
-            <button name="action" type="submit">Login</button>
+            <br>
+            <button name="action" type="submit" value="Login">Login</button>
         </form>
     <c:if test="${requestScope.WARNING != null || not empty requestScope.WARNING}">
         ${requestScope.WARNING}

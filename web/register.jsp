@@ -15,15 +15,22 @@
     <body>
         <form method="post" action="MainController">
             <label>Username</label>
-            <input name="username" type="username"/>
+            <input name="username" type="text"/>
+            <br>
             <label>Email</label>
             <input name="email" type="email"/>
+            <br>
             <label>Password</label>
             <input name="password" type="password"/>
+            <br>
             <label>Re-enter password</label>
             <input name="check-password" type="password"/>
-            <input type="submit" value="Sign up"/>
+            <br>
+            <input name="action" type="submit" value="Sign up"/>
             <input type="reset" value="Reset"/>
         </form>
+        <c:if test="${requestScope.WARNING != null || not empty requestScope.WARNING}">
+            ${requestScope.WARNING}
+        </c:if>
     </body>
 </html>

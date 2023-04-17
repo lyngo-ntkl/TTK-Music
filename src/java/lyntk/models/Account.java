@@ -5,6 +5,8 @@
  */
 package lyntk.models;
 
+import java.util.Date;
+import java.util.UUID;
 import lyntk.enums.AccountRole;
 
 /**
@@ -12,28 +14,41 @@ import lyntk.enums.AccountRole;
  * @author Dell
  */
 public class Account {
-    private String id;
+    private final String id;
     private String email;
     private String password;
     private String username;
     private AccountRole role;
+    private boolean activeStatus;
 
     public Account() {
+        this.id = UUID.nameUUIDFromBytes((email + new Date()).getBytes()).toString();
     }
 
-    public Account(String email, String password, String username, AccountRole role) {
+    public Account(String id) {
+        this.id = id;
+    }
+
+    public Account(String email, String password, String username, AccountRole role, boolean activeStatus) {
+        this.id = UUID.nameUUIDFromBytes((email + new Date()).getBytes()).toString();
         this.email = email;
         this.password = password;
         this.username = username;
         this.role = role;
+        this.activeStatus = activeStatus;
+    }
+
+    public Account(String id, String email, String password, String username, AccountRole role, boolean activeStatus) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.username = username;
+        this.role = role;
+        this.activeStatus = activeStatus;
     }
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getEmail() {
@@ -67,6 +82,12 @@ public class Account {
     public void setRole(AccountRole role) {
         this.role = role;
     }
-    
-    
+
+    public boolean isActiveStatus() {
+        return activeStatus;
+    }
+
+    public void setActiveStatus(boolean activeStatus) {
+        this.activeStatus = activeStatus;
+    }
 }
