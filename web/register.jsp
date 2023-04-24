@@ -10,27 +10,27 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="js/PasswordValidation.js"></script>
         <title>TTK Music - Sign up</title>
     </head>
     <body>
         <form method="post" action="MainController">
-            <label>Username</label>
-            <input name="username" type="text"/>
-            <br>
             <label>Email</label>
-            <input name="email" type="email"/>
+            <input name="email" type="email" required=""/>
             <br>
             <label>Password</label>
-            <input name="password" type="password"/>
+            <input id="password1" name="password" type="password" required="" oninput="validatePasswordFormat(this,'passwordInform')"/>
             <br>
-            <label>Re-enter password</label>
-            <input name="check-password" type="password"/>
+            <div id="passwordInform"></div>
+            <label>Confirm password</label>
+            <input id="password2" name="confirmPassword" type="password" required="" oninput="checkPasswordMatching()"/>
+            <div id="confirmInform"></div>
+            <br>
+            <label>Username</label>
+            <input name="username" type="text" required=""/>
             <br>
             <input name="action" type="submit" value="Sign up"/>
             <input type="reset" value="Reset"/>
         </form>
-        <c:if test="${requestScope.WARNING != null || not empty requestScope.WARNING}">
-            ${requestScope.WARNING}
-        </c:if>
     </body>
 </html>

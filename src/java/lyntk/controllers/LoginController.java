@@ -7,13 +7,13 @@ package lyntk.controllers;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import lyntk.dao.AccountDao;
 import lyntk.dao.impl.AccountDaoImpl;
-import lyntk.enums.AccountRole;
 import lyntk.models.Account;
 import lyntk.utils.EncryptionUtil;
 
@@ -22,9 +22,11 @@ import lyntk.utils.EncryptionUtil;
  * @author Dell
  */
 public class LoginController extends HttpServlet {
-    
+
     private static final String ERROR_PAGE = "login.jsp";
+    private static final int ADMIN = 1;
     private static final String ADMIN_PAGE = "";
+    private static final int USER = 2;
     private static final String USER_PAGE = "dashboard.jsp";
 
     /**
@@ -45,24 +47,35 @@ public class LoginController extends HttpServlet {
             String password = EncryptionUtil.encrypt(request.getParameter("password"));
             AccountDao accountDao = new AccountDaoImpl();
             Account account = accountDao.findAccountByEmailAndPassword(email, password);
-            if(account != null){
+            if (account != null) {
                 account.setPassword("***");
                 HttpSession session = request.getSession();
                 session.setAttribute("USER", account);
-                if(account.getRole() == AccountRole.USER){
-                    url = USER_PAGE;
-                } else if(account.getRole() == AccountRole.ADMIN){
+                if(ADMIN == account.getRoleId()){
                     url = ADMIN_PAGE;
+                } else if (USER == account.getRoleId()){
+                    url = USER_PAGE;
+                }
+                // remember user login information - opt in
+                String rememberMe = request.getParameter("rememberMe");
+                if (rememberMe != null) {
+                    Cookie cookie1 = new Cookie("email", email);
+                    Cookie cookie2 = new Cookie("password", password);
+                    cookie1.setMaxAge(60 * 5);
+                    cookie2.setMaxAge(60 * 5);
+                    response.addCookie(cookie1);
+                    response.addCookie(cookie2);
                 }
             } else {
                 request.setAttribute("WARNING", "INVALID EMAIL OR PASSWORD");
             }
         } catch (Exception e) {
             log("Error at LoginController: " + e);
+        } finally {
+            request.getRequestDispatcher(url).forward(request, response);
         }
-        request.getRequestDispatcher(url).forward(request, response);
     }
-
+    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

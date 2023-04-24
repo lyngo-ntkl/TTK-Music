@@ -11,16 +11,17 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author Dell
  */
-@WebServlet(name = "TemplateControlller", urlPatterns = {"/TemplateControlller"})
-public class TemplateControlller extends HttpServlet {
+@WebServlet(name = "LogoutController", urlPatterns = {"/LogoutController"})
+public class LogoutController extends HttpServlet {
 
     private static final String ERROR_PAGE = "error.html";
-    private static final String SUCCESS_PAGE = "";
+    private static final String SUCCESS_PAGE = "login.jsp";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,9 +37,13 @@ public class TemplateControlller extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String url = ERROR_PAGE;
         try {
-
+            HttpSession session = request.getSession(false);
+            if(session != null){
+                session.invalidate();
+                url = SUCCESS_PAGE;
+            }
         } catch (Exception e) {
-            log("Error at Controller: " + e);
+            log("Error at LogoutController: " + e);
         } finally {
             request.getRequestDispatcher(url).forward(request, response);
         }

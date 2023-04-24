@@ -1,6 +1,7 @@
 package lyntk.dao;
 
 import java.sql.SQLException;
+import javax.naming.NamingException;
 import lyntk.models.Account;
 
 /*
@@ -14,7 +15,7 @@ import lyntk.models.Account;
  * @author Dell
  */
 public interface AccountDao {
-    Account findAccountByEmail(String email) throws SQLException, ClassNotFoundException;
-    Account findAccountByEmailAndPassword(String email, String password) throws SQLException, ClassNotFoundException;
-    boolean save(Account account) throws SQLException, ClassNotFoundException;
+    Account findAccountByEmail(String email) throws SQLException, NamingException;
+    Account findAccountByEmailAndPassword(String email, String password) throws SQLException, NamingException;
+    boolean save(Account account) throws SQLException, NamingException;
 }

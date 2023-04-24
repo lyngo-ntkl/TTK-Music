@@ -7,7 +7,6 @@ package lyntk.models;
 
 import java.util.Date;
 import java.util.UUID;
-import lyntk.enums.AccountRole;
 
 /**
  *
@@ -18,7 +17,7 @@ public class Account {
     private String email;
     private String password;
     private String username;
-    private AccountRole role;
+    private int roleId;
     private boolean activeStatus;
 
     public Account() {
@@ -29,21 +28,21 @@ public class Account {
         this.id = id;
     }
 
-    public Account(String email, String password, String username, AccountRole role, boolean activeStatus) {
+    public Account(String email, String password, String username, int roleId, boolean activeStatus) {
         this.id = UUID.nameUUIDFromBytes((email + new Date()).getBytes()).toString();
         this.email = email;
         this.password = password;
         this.username = username;
-        this.role = role;
+        this.roleId = roleId;
         this.activeStatus = activeStatus;
     }
 
-    public Account(String id, String email, String password, String username, AccountRole role, boolean activeStatus) {
+    public Account(String id, String email, String password, String username, int roleId, boolean activeStatus) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.username = username;
-        this.role = role;
+        this.roleId = roleId;
         this.activeStatus = activeStatus;
     }
 
@@ -75,12 +74,12 @@ public class Account {
         this.username = username;
     }
 
-    public AccountRole getRole() {
-        return role;
+    public int getRoleId() {
+        return roleId;
     }
 
-    public void setRole(AccountRole role) {
-        this.role = role;
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
     }
 
     public boolean isActiveStatus() {

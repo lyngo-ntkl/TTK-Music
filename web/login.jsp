@@ -15,10 +15,13 @@
         <h1>Login</h1>
         <form action="MainController" method="POST">
             <label>Email</label>
-            <input name="email" type="email"/>
+            <input name="email" type="email" required=""/>
             <br>
             <label>Password</label>
-            <input name="password" type="password"/>
+            <input name="password" type="password" required=""/>
+            <br>
+            <input name="rememberMe" type="checkbox"/>
+            <label for="rememberMe">Remember Me</label>
             <br>
             <button name="action" type="submit" value="Login">Login</button>
         </form>

@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package lyntk.enums;
+package lyntk.models;
 
 /**
  *
  * @author Dell
  */
-public enum CourseCategory {
+public class Cart {
     
 }

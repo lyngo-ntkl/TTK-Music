@@ -5,20 +5,24 @@
  */
 package lyntk.utils;
 
+import java.io.Serializable;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 
 /**
  *
  * @author Dell
  */
-public class DatabaseUtil {
-    public static Connection getDatabaseConnection() throws ClassNotFoundException, SQLException{
-        Connection connection = null;
-        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-        String url = "jdbc:sqlserver://localhost:1433;databaseName=TTK_music;encrypt=true;trustServerCertificate=true;";
-        connection = DriverManager.getConnection(url, "sa", "12345");
+public class DatabaseUtil implements Serializable{
+    public static Connection getDatabaseConnection() throws SQLException, NamingException{
+        Context context = new InitialContext();
+        Context envContext = (Context) context.lookup("java:comp/env");
+        DataSource datasource = (DataSource) envContext.lookup("DBConnection");
+        Connection connection = datasource.getConnection();
         return connection;
     }
 }

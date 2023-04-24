@@ -16,8 +16,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Dell
  */
-@WebServlet(name = "TemplateControlller", urlPatterns = {"/TemplateControlller"})
-public class TemplateControlller extends HttpServlet {
+@WebServlet(name = "OAuthLoginController", urlPatterns = {"/OAuthLoginController"})
+public class OAuthLoginController extends HttpServlet {
 
     private static final String ERROR_PAGE = "error.html";
     private static final String SUCCESS_PAGE = "";
@@ -36,12 +36,11 @@ public class TemplateControlller extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String url = ERROR_PAGE;
         try {
-
+            
         } catch (Exception e) {
             log("Error at Controller: " + e);
-        } finally {
-            request.getRequestDispatcher(url).forward(request, response);
         }
+        request.getRequestDispatcher(url).forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

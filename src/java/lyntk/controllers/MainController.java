@@ -7,6 +7,7 @@ package lyntk.controllers;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,11 @@ import javax.servlet.http.HttpServletResponse;
  * @author Dell
  */
 @WebServlet(name = "MainController", urlPatterns = {"/MainController"})
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024,
+        maxFileSize = 1024 * 1024 * 2,
+        maxRequestSize = 1024 * 1024 * 2 * 3
+)
 public class MainController extends HttpServlet {
     
     private static final String ERROR_PAGE = "error.html";
@@ -24,6 +30,12 @@ public class MainController extends HttpServlet {
     private static final String LOGIN_CONTROLLER = "LoginController";
     private static final String REGISTER = "Sign up";
     private static final String REGISTER_CONTROLLER = "RegisterController";
+    private static final String LOGOUT = "Logout";
+    private static final String LOGOUT_CONTROLLER = "LogoutController";
+    private static final String SEARCH = "Search";
+    private static final String SEARCH_CONTROLLER = "SearchController";
+    private static final String CREATE_COURSE = "Create course";
+    private static final String CREATE_COURSE_CONTROLLER = "CreateCourseController";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,18 +52,22 @@ public class MainController extends HttpServlet {
         String url = ERROR_PAGE;
         try {
             String action = request.getParameter("action");
-            switch(action){
-                case REGISTER:
-                    url = REGISTER_CONTROLLER;
-                    break;
-                case LOGIN:
-                    url = LOGIN_CONTROLLER;
-                    break;
+            if(REGISTER.equals(action)){
+                url = REGISTER_CONTROLLER;
+            } else if (LOGIN.equals(action)){
+                url = LOGIN_CONTROLLER;
+            } else if (LOGOUT.equals(action)){
+                url = LOGOUT_CONTROLLER;
+            } else if (SEARCH.equals(action)){
+                url = SEARCH_CONTROLLER;
+            } else if (CREATE_COURSE.equals(action)){
+                url = CREATE_COURSE_CONTROLLER;
             }
         } catch (Exception e) {
             log("Error at MainController: " + e);
+        } finally {
+            request.getRequestDispatcher(url).forward(request, response);
         }
-        request.getRequestDispatcher(url).forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

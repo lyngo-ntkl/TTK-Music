@@ -5,6 +5,28 @@ GO
 USE TTK_music
 GO
 
+/*
+DROP DATABASE IF EXISTS TTK_Music
+DROP TABLE roles
+DROP TABLE courses
+DROP TABLE categories
+DROP TABLE accounts
+*/
+
+
+/****** Object:  Table [dbo].[roles] ******/
+CREATE TABLE roles(
+	role_id INT IDENTITY(1,1) NOT NULL,
+	role_name VARCHAR(50) NOT NULL,
+	CONSTRAINT PK_roles PRIMARY KEY CLUSTERED (role_id ASC)
+	WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY] 
+GO
+SET IDENTITY_INSERT roles ON
+INSERT roles(role_id,role_name) VALUES (1,'ADMIN');
+INSERT roles(role_id,role_name) VALUES (2,'USER');
+SET IDENTITY_INSERT roles OFF
+
 
 /****** Object:  Table [dbo].[accounts] ******/
 CREATE TABLE accounts(
@@ -12,60 +34,72 @@ CREATE TABLE accounts(
 	email VARCHAR(50) NOT NULL,
 	password VARCHAR(32) NOT NULL,
 	username NVARCHAR(50)  NOT NULL,
-	role_id VARCHAR(5) NOT NULL CHECK(role_id='ADMIN' OR role_id='USER'),
+	role_id INT NOT NULL,
 	status BIT,
-	CONSTRAINT UNQ_tblAccounts UNIQUE (email),
-	CONSTRAINT PK_tblAccounts PRIMARY KEY CLUSTERED (account_id ASC) 
+	CONSTRAINT UNQ_accounts UNIQUE (email),
+	CONSTRAINT FK_accounts_roles FOREIGN KEY (role_id) REFERENCES roles,
+	CONSTRAINT PK_accounts PRIMARY KEY CLUSTERED (account_id ASC) 
 	WITH (IGNORE_DUP_KEY = OFF, PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 )
 GO
-INSERT accounts (account_id, email, password, username, role_id, status) VALUES ('Admin1', 'admin@gmail.com', '1', 'Administrator', 'AD', '012345678')
+INSERT accounts (account_id, email, password, username, role_id, status) VALUES ('c39034a5-0334-3d8b-94d8-7be2f88f8c0d', 'admin@gmail.com', 'c4ca4238a0b923820dcc509a6f75849b', 'Admin', 1, 1);
+INSERT accounts (account_id, email, password, username, role_id, status) VALUES ('e58ed763-928c-4155-bee9-fdbaaadc15f3', 'ins@gmail.com', 'c4ca4238a0b923820dcc509a6f75849b', 'Instructor', 2, 1);
+INSERT accounts (account_id, email, password, username, role_id, status) VALUES ('438eaaee-4d0f-3ac3-ad54-76c1002a42cc', 'meow@gmail.com', 'c4ca4238a0b923820dcc509a6f75849b', 'A Flying Cat', 2, 1);
 GO
 
 
-/****** Object:  Table [dbo].[tblContacts] ******/
-CREATE TABLE tblContacts(
-	contactId VARCHAR(32) NOT NULL,
-	accountId VARCHAR(32) NOT NULL,
-	phone VARCHAR(15),
-	city VARCHAR(20),
-	district VARCHAR(20),
-	ward VARCHAR(20),
-	CONSTRAINT FK_tblContacts FOREIGN KEY (accountId) REFERENCES tblAccounts,
-	CONSTRAINT PK_tblContacts PRIMARY KEY CLUSTERED (contactId ASC) 
-	WITH (IGNORE_DUP_KEY = OFF, PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-)
-GO
-
-
-/****** Object:  Table [dbo].[tblCategories] ******/
-CREATE TABLE tblCategories(
-	categoryId INT IDENTITY(1,1) NOT NULL,
-	categoryName VARCHAR(50) NOT NULL,
-	CONSTRAINT PK_tblCategory PRIMARY KEY CLUSTERED (categoryId ASC)
+/****** Object:  Table [dbo].[categories] ******/
+CREATE TABLE categories(
+	category_id INT IDENTITY(1,1) NOT NULL,
+	category_name VARCHAR(50) NOT NULL,
+	CONSTRAINT PK_categories PRIMARY KEY CLUSTERED (category_id ASC)
 	WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY] 
 GO
-SET IDENTITY_INSERT tblCategories ON
-INSERT tblCategories(categoryId,categoryName) VALUES (1,'Tea')
-INSERT tblCategories(categoryId,categoryName) VALUES (2,'Coffee')
-INSERT tblCategories(categoryId,categoryName) VALUES (3,'Milk tea')
-INSERT tblCategories(categoryId,categoryName) VALUES (4,'Dessert')
-SET IDENTITY_INSERT tblCategories OFF
+SET IDENTITY_INSERT categories ON
+INSERT categories(category_id,category_name) VALUES (1,'INSTRUMENTS');
+INSERT categories(category_id,category_name) VALUES (2,'MUSIC_PRODUCTION');
+INSERT categories(category_id,category_name) VALUES (3,'MUSIC_FUNDAMENTALS');
+INSERT categories(category_id,category_name) VALUES (4,'VOCAL');
+INSERT categories(category_id,category_name) VALUES (5,'MUSIC_TECHNIQUES');
+INSERT categories(category_id,category_name) VALUES (6,'MUSIC_SOFTWARE');
+INSERT categories(category_id,category_name) VALUES (7,'OTHERS');
+SET IDENTITY_INSERT categories OFF
 
 
 /****** Object:  Table [dbo].[courses] ******/
 CREATE TABLE courses(
 	course_id VARCHAR(36) NOT NULL,
 	course_name VARCHAR(50) NOT NULL,
-	price MONEY NOT NULL,
-	quantity INT NOT NULL,
-	categoryId INT,
-	imgPath VARCHAR(50),
+	image VARCHAR(50),
 	description TEXT,
-	CONSTRAINT FK_tblProducts FOREIGN KEY (categoryId) REFERENCES tblCategories,
-	CONSTRAINT PK_tblProducts PRIMARY KEY CLUSTERED(productId ASC)
+	tuition_fee MONEY NOT NULL,
+	category_id INT NOT NULL,
+	created_date
+	start_date DATE,
+	end_date DATE,
+	last_updated_date DATETIME,
+	last_updated_user_id VARCHAR(36),
+	active_status BIT NOT NULL,
+
+	quantity INT NOT NULL,
+
+	CONSTRAINT FK_courses_categories FOREIGN KEY (category_id) REFERENCES categories,
+	CONSTRAINT FK_courses_accounts FOREIGN KEY (last_updated_user_id) REFERENCES accounts,
+	CONSTRAINT PK_courses PRIMARY KEY CLUSTERED(course_id ASC)
 	WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+)
+GO
+
+
+/****** Object:  Table [dbo].[carts] ******/
+CREATE TABLE carts(
+	cart_id VARCHAR(36) NOT NULL,
+	account_id VARCHAR(36) NOT NULL,
+	total MONEY,
+	CONSTRAINT FK_carts FOREIGN KEY (account_id) REFERENCES accounts,
+	CONSTRAINT PK_carts PRIMARY KEY CLUSTERED (cart_id ASC) 
+	WITH (IGNORE_DUP_KEY = OFF, PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 )
 GO
 
@@ -111,83 +145,6 @@ SET IDENTITY_INSERT Accounts OFF
 
 
 
-USE [master]
-GO
-drop database MilkTeaShopManagement
-go
-/****** Object:  Database [MilkTeaShopManagement]    Script Date: 11/27/2021 13:04:02 ******/
-CREATE DATABASE [MilkTeaShopManagement] ON  PRIMARY 
-( NAME = N'MilkTeaShopManagement', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL10_50.SQLEXPRESS\MSSQL\DATA\MilkTeaShopManagement.mdf' , SIZE = 2048KB , MAXSIZE = UNLIMITED, FILEGROWTH = 1024KB )
- LOG ON 
-( NAME = N'MilkTeaShopManagement_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL10_50.SQLEXPRESS\MSSQL\DATA\MilkTeaShopManagement_log.ldf' , SIZE = 1024KB , MAXSIZE = 2048GB , FILEGROWTH = 10%)
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET COMPATIBILITY_LEVEL = 100
-GO
-IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
-begin
-EXEC [MilkTeaShopManagement].[dbo].[sp_fulltext_database] @action = 'enable'
-end
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET ANSI_NULL_DEFAULT OFF
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET ANSI_NULLS OFF
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET ANSI_PADDING OFF
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET ANSI_WARNINGS OFF
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET ARITHABORT OFF
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET AUTO_CLOSE OFF
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET AUTO_CREATE_STATISTICS ON
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET AUTO_SHRINK OFF
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET AUTO_UPDATE_STATISTICS ON
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET CURSOR_CLOSE_ON_COMMIT OFF
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET CURSOR_DEFAULT  GLOBAL
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET CONCAT_NULL_YIELDS_NULL OFF
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET NUMERIC_ROUNDABORT OFF
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET QUOTED_IDENTIFIER OFF
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET RECURSIVE_TRIGGERS OFF
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET  DISABLE_BROKER
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET AUTO_UPDATE_STATISTICS_ASYNC OFF
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET DATE_CORRELATION_OPTIMIZATION OFF
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET TRUSTWORTHY OFF
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET ALLOW_SNAPSHOT_ISOLATION OFF
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET PARAMETERIZATION SIMPLE
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET READ_COMMITTED_SNAPSHOT OFF
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET HONOR_BROKER_PRIORITY OFF
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET  READ_WRITE
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET RECOVERY SIMPLE
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET  MULTI_USER
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET PAGE_VERIFY CHECKSUM
-GO
-ALTER DATABASE [MilkTeaShopManagement] SET DB_CHAINING OFF
-GO
-USE [MilkTeaShopManagement]
-GO
-drop table tblUsers
-go
 
 /****** Object:  Table [dbo].[tblUsers]    Script Date: 11/27/2021 13:04:02 ******/
 SET ANSI_NULLS ON

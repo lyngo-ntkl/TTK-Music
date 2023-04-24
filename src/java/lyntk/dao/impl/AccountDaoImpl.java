@@ -9,8 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.naming.NamingException;
 import lyntk.dao.AccountDao;
-import lyntk.enums.AccountRole;
 import lyntk.models.Account;
 import lyntk.utils.DatabaseUtil;
 
@@ -26,7 +26,7 @@ public class AccountDaoImpl implements AccountDao {
     private static final String SAVE = "INSERT INTO accounts(account_id, email, password, username, role_id, status) VALUES (?, ?, ?, ?, ?, ?)";
     
     @Override
-    public Account findAccountByEmail(String email) throws SQLException, ClassNotFoundException{
+    public Account findAccountByEmail(String email) throws SQLException, NamingException{
         Account account = null;
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -57,7 +57,7 @@ public class AccountDaoImpl implements AccountDao {
     }
     
     @Override
-    public Account findAccountByEmailAndPassword(String email, String password) throws SQLException, ClassNotFoundException{
+    public Account findAccountByEmailAndPassword(String email, String password) throws SQLException, NamingException{
         Account account = null;
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -73,8 +73,8 @@ public class AccountDaoImpl implements AccountDao {
                 if(resultSet.next()){
                     String id = resultSet.getString("account_id");
                     String username = resultSet.getString("username");
-                    String role = resultSet.getString("role_id");
-                    account = new Account(id, email, password, username, AccountRole.valueOf(role), true);
+                    int role = resultSet.getInt("role_id");
+                    account = new Account(id, email, password, username, role, true);
                 }
             }
         } finally {
@@ -92,7 +92,7 @@ public class AccountDaoImpl implements AccountDao {
     }
 
     @Override
-    public boolean save(Account account) throws SQLException, ClassNotFoundException{
+    public boolean save(Account account) throws SQLException, NamingException{
         boolean check = false;
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -104,7 +104,7 @@ public class AccountDaoImpl implements AccountDao {
                 preparedStatement.setString(2, account.getEmail());
                 preparedStatement.setString(3, account.getPassword());
                 preparedStatement.setString(4, account.getUsername());
-                preparedStatement.setString(5, account.getRole().name());
+                preparedStatement.setInt(5, account.getRoleId());
                 preparedStatement.setBoolean(6, account.isActiveStatus());
                 check = preparedStatement.executeUpdate() > 0;
             }
